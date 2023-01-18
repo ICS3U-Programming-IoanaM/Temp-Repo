@@ -30,7 +30,7 @@ def splash_scene():
         image_bank_mt_background, constants.SCREEN_GRID_X, constants.SCREEN_GRID_Y
     )
 
-        # used this program to split the image into tile: 
+    # used this program to split the image into tile:
     #   https://ezgif.com/sprite-cutter/ezgif-5-818cdbcc3f66.png
     background.tile(2, 2, 0)  # blank white
     background.tile(3, 2, 1)
@@ -75,7 +75,6 @@ def splash_scene():
         menu_scene()
 
 
-
 # main menu_scene
 def menu_scene():
     # imports all images needed
@@ -83,12 +82,16 @@ def menu_scene():
 
     # adds text objects
     text = []
-    text1 = stage.Text(width=29, height=12, font=None, palette=constants.RED_PALETTE, buffer=None)
+    text1 = stage.Text(
+        width=29, height=12, font=None, palette=constants.RED_PALETTE, buffer=None
+    )
     text1.move(20, 10)
     text1.text("MT Game Studios")
     text.append(text1)
 
-    text2 = stage.Text(width=29, height=12, font=None, palette=constants.RED_PALETTE, buffer=None)
+    text2 = stage.Text(
+        width=29, height=12, font=None, palette=constants.RED_PALETTE, buffer=None
+    )
     text2.move(40, 110)
     text2.text("PRESS START")
     text.append(text2)
@@ -161,7 +164,9 @@ def game_scene():
     # creates multiple lasers for when we shoot
     lasers = []
     for laser_number in range(constants.TOTAL_NUMBER_OF_LASERS):
-        a_single_laser = stage.Sprite(image_bank_sprites, 10, constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
+        a_single_laser = stage.Sprite(
+            image_bank_sprites, 10, constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+        )
         lasers.append(a_single_laser)
 
     # creates a stage for the background to be displayed
@@ -179,7 +184,7 @@ def game_scene():
 
         # A button pressed to fire
         if keys & ugame.K_X != 0:
-            # makes the sound of a 
+            # makes the sound of a
             if a_button == constants.button_state["button_up"]:
                 a_button = constants.button_state["button_just_pressed"]
             elif a_button == constants.button_state["button_just_pressed"]:
@@ -232,15 +237,19 @@ def game_scene():
         # each frame move the lasers that have been fired
         for laser_number in range(len(lasers)):
             if lasers[laser_number].x > 0:
-                lasers[laser_number].move(lasers[laser_number].x, lasers[laser_number].y - constants.LASER_SPEED)
+                lasers[laser_number].move(
+                    lasers[laser_number].x,
+                    lasers[laser_number].y - constants.LASER_SPEED,
+                )
                 if lasers[laser_number].y < constants.OFF_TOP_SCREEN:
-                    lasers[laser_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
+                    lasers[laser_number].move(
+                        constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+                    )
 
         # redraws the Sprites
-        game.render_sprites( lasers + [ship] + [alien])
+        game.render_sprites(lasers + [ship] + [alien])
         game.tick()
 
 
 if __name__ == "__main__":
     menu_scene()
- 

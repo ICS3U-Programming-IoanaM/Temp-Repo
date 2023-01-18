@@ -20,7 +20,7 @@ LASER_SPEED = 2
 OFF_SCREEN_X = -100
 OFF_SCREEN_Y = -100
 OFF_TOP_SCREEN = -1 * SPRITE_SIZE
-OFF_BOTTOM_SCREEN = SCREEN_Y + SPRITE_SIZE 
+OFF_BOTTOM_SCREEN = SCREEN_Y + SPRITE_SIZE
 FPS = 60
 SPRITE_MOVEMENT_SPEED = 1
 
@@ -33,5 +33,7 @@ button_state = {
 }
 
 # new palette for red filled text
-RED_PALETTE = (b'\xff\xff\x00\x22\xcey\x22\xff\xff\xff\xff\xff\xff\xff\xff\xff'
-b'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff')
+RED_PALETTE = (
+    b"\xff\xff\x00\x22\xcey\x22\xff\xff\xff\xff\xff\xff\xff\xff\xff"
+    b"\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff"
+)
