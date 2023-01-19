@@ -6,11 +6,12 @@
 # space aliens game
 
 
+import random
+import time
+
 import constants
 import stage
 import ugame
-import time
-import random
 
 
 # main splash_scene
