@@ -85,14 +85,14 @@ def menu_scene():
     # adds text objects
     text = []
     text1 = stage.Text(
-        width=29, height=12, font=None, palette=constants.RED_PALETTE, buffer=None
+        width=29, height=12, font=None, palette=constants.BLUE_PALETTE, buffer=None
     )
     text1.move(20, 10)
-    text1.text("MT Game Studios")
+    text1.text("MAC Game Studios")
     text.append(text1)
 
     text2 = stage.Text(
-        width=29, height=12, font=None, palette=constants.RED_PALETTE, buffer=None
+        width=29, height=12, font=None, palette=constants.BLUE_PALETTE, buffer=None
     )
     text2.move(40, 110)
     text2.text("PRESS START")
@@ -126,11 +126,11 @@ def menu_scene():
 
 # main game_scene
 def game_scene():
-    # takes 1 alien from off the screen and displays it
-    def show_alien():
-        for alien_num in range(len(aliens)):
-            if aliens(alien_num).x < 0:
-                aliens(alien_num).move(
+    # takes 1 bad review from off the screen and displays it
+    def show_bad_review():
+        for bad_review_num in range(len(bad_reviews)):
+            if bad_reviews(bad_review_num).x < 0:
+                bad_reviews(bad_review_num).move(
                     random.randint(
                         0 + constants.SPRITE_SIZE,
                         constants.SCREEN_X - constants.SPRITE_SIZE,
@@ -149,8 +149,8 @@ def game_scene():
     score_text.text("Score: {0}".format(score))
 
     # imports all images needed
-    image_bank_background = stage.Bank.from_bmp16("Assets/space_aliens_background.bmp")
-    image_bank_sprites = stage.Bank.from_bmp16("Assets/space_aliens.bmp")
+    image_bank_background = stage.Bank.from_bmp16("Assets/this_is_a_game_background.bmp")
+    image_bank_sprites = stage.Bank.from_bmp16("Assets/this_is_a_game.bmp")
 
     # buttons that you want to keep state information on
     a_button = constants.button_state["button_up"]
@@ -159,9 +159,9 @@ def game_scene():
     start_button = constants.button_state["button_up"]
 
     # get sound ready
-    pew_sound = open("Assets/pew.wav", "rb")
+    pew_sound = open("Assets/twinkle.wav", "rb")
     boom_sound = open("Assets/boom.wav", "rb")
-    crash_sound = open("Assets/crash.wav", "rb")
+    scream_sound = open("Assets/scream.wav", "rb")
     sound = ugame.audio
     sound.stop()
     sound.mute(False)
@@ -177,31 +177,37 @@ def game_scene():
             background.tile(x_location, y_location, tile_picked)
 
     # sprites
-    ship = stage.Sprite(
-        image_bank_sprites, 5, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE)
+    # the dev
+    dev = stage.Sprite(
+        image_bank_sprites, 6, 75, constants.SCREEN_Y - (2 * constants.SPRITE_SIZE)
     )
-    aliens = []
-    for aliens_num in range(constants.TOTAL_NUMBER_OF_ALIENS):
-        a_single_alien = stage.Sprites(
+    # bad reviews
+    bad_reviews = []
+    for bad_reviews_num in range(constants.TOTAL_NUMBER_OF_BAD_REVIEWS):
+        one_bad_review = stage.Sprites(
             image_bank_sprites, 10, constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
         )
-        aliens.append(a_single_alien)
-    # place 1 alien on the screen
-    show_alien()
+        bad_reviews.append(one_bad_review)
+    # place 1 bad review on the screen
+    show_bad_review()
+    # good review
+    good_review = stage.Sprites(
+        image_bank_sprites, 11, constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+    )
 
-    # creates multiple lasers for when we shoot
-    lasers = []
-    for laser_number in range(constants.TOTAL_NUMBER_OF_LASERS):
-        a_single_laser = stage.Sprite(
-            image_bank_sprites, 10, constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+    # creates multiple ls for when we shoot
+    l = []
+    for l_num in range(constants.TOTAL_NUMBER_OF_L):
+        one_l = stage.Sprite(
+            image_bank_sprites, 12, constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
         )
-        lasers.append(a_single_laser)
+        l.append(one_l)
 
     # creates a stage for the background to be displayed
     # and sets the frame rate to 60fps
     game = stage.Stage(ugame.display, constants.FPS)
     # sets layers, items show up in order
-    game.layers = [score_text] + lasers + [ship] + aliens + [background]
+    game.layers = [score_text] + l + [dev] + bad_reviews + [good_review] + [background]
     # renders background + original location of the sprite
     game.render_block()
 
@@ -233,20 +239,20 @@ def game_scene():
         if keys & ugame.K_SELECT != 0:
             pass
         if keys & ugame.K_RIGHT != 0:
-            # moves ship
-            if ship.x <= (constants.SCREEN_X - constants.SPRITE_SIZE):
-                ship.move(ship.x + constants.SPRITE_MOVEMENT_SPEED, ship.y)
+            # moves dev
+            if dev.x <= (constants.SCREEN_X - constants.SPRITE_SIZE):
+                dev.move(dev.x + constants.SPRITE_MOVEMENT_SPEED, dev.y)
             # sets boundaries for the right side
             else:
-                ship.move(constants.SCREEN_X - constants.SPRITE_SIZE, ship.y)
+                dev.move(constants.SCREEN_X - constants.SPRITE_SIZE, dev.y)
 
         if keys & ugame.K_LEFT != 0:
             # moves ship
-            if ship.x > 0:
-                ship.move((ship.x - constants.SPRITE_MOVEMENT_SPEED), ship.y)
+            if dev.x > 0:
+                dev.move((dev.x - constants.SPRITE_MOVEMENT_SPEED), dev.y)
             # sets boundaries for the left side
             else:
-                ship.move(0, ship.y)
+                dev.move(0, dev.y)
 
         if keys & ugame.K_UP != 0:
             pass
@@ -254,38 +260,39 @@ def game_scene():
             pass
 
         # updates game logic
-        # fores a laser if A button is pressed
+        # fores an "l if A button is pressed
         if a_button == constants.button_state["button_just_pressed"]:
-            for laser_number in range(len(lasers)):
-                if lasers[laser_number].x < 0:
-                    lasers[laser_number].move(ship.x, ship.y)
+            for l_num in range(len(l)):
+                if l[l_num].x < 0:
+                    l[l_num].move(dev.x, dev.y)
                     sound.play(pew_sound)
                     break
 
-        # each frame move the lasers that have been fired
-        for laser_number in range(len(lasers)):
-            if lasers[laser_number].x > 0:
-                lasers[laser_number].move(
-                    lasers[laser_number].x,
-                    lasers[laser_number].y - constants.LASER_SPEED,
+        # each frame move the "l"s that have been fired
+        for l_num in range(len(l)):
+            if l[l_num].x > 0:
+                l[l_num].move(
+                    l[l_num].x,
+                    l[l_num].y - constants.L_SPEED,
                 )
-                if lasers[laser_number].y < constants.OFF_TOP_SCREEN:
-                    lasers[laser_number].move(
+                if l[l_num].y < constants.OFF_TOP_SCREEN:
+                    l[l_num].move(
                         constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
                     )
 
-        # each frame move the aliens down
-        for alien_number in range(len(aliens)):
-            if aliens[alien_number].x > 0:
-                lasers[alien_number].move(
-                    aliens[alien_number].x,
-                    aliens[alien_number].y + constants.ALIEN_SPEED,
+        # each frame move the bad reviews down
+        for bad_reviews_num in range(len(bad_reviews)):
+            if bad_reviews[bad_reviews_num].x > 0:
+                bad_reviews[bad_reviews_num].move(
+                    bad_reviews[bad_reviews_num].x,
+                    bad_reviews[bad_reviews_num].y + constants.ALIEN_SPEED,
                 )
-                if aliens[alien_number].y > constants.SCREEN_Y:
-                    aliens[alien_number].move(
+                if bad_reviews[bad_reviews_num].y > constants.SCREEN_Y:
+                    bad_reviews[bad_reviews_num].move(
                         constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
                     )
-                    show_alien()
+                    show_bad_review()
+                    # update the score
                     score -= 1
                     if score < 0:
                         score = 0
@@ -294,58 +301,102 @@ def game_scene():
                     score_text.move(1, 1)
                     score_text.text("Score: {0}".format(score))
 
-        # checks if any collisions occurred between lasers and aliens each frame
-        for laser_num in range(len(lasers)):
-            if lasers[laser_num].x > 0:
-                for alien_num in range(len(aliens)):
-                    if aliens[aliens_num].x > 0:
+        if good_review.x > 0:
+            good_review.move(
+                good_review.x,
+                good_review.y + constants.ALIEN_SPEED,
+            )
+            if good_review.y > constants.SCREEN_Y:
+                good_review.move(
+                    constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
+                )
+                # shows the good review
+                good_review.move(
+                    random.randint(
+                        0 + constants.SPRITE_SIZE,
+                        constants.SCREEN_X - constants.SPRITE_SIZE,
+                    ),
+                    constants.OFF_TOP_SCREEN,
+                )
+                # update the score
+                score_text.clear()
+                score_text.cursor(0, 0)
+                score_text.move(1, 1)
+                score_text.text("Score: {0}".format(score))
+
+        # checks if any collisions occurred between ls and bad reviews each frame
+        for l_num in range(len(l)):
+            if l[l_num].x > 0:
+                for bad_reviews_num in range(len(bad_reviews)):
+                    if bad_reviews[bad_reviews_num].x > 0:
                         if stage.collide(
-                            lasers[laser_num].x + 6,
-                            lasers[laser_num].y + 2,
-                            lasers[laser_num].x + 11,
-                            lasers[laser_num].y + 12,
-                            aliens[alien_num].x + 1,
-                            aliens[alien_num].y,
-                            aliens[alien_num].x + 15,
-                            aliens[alien_num].y + 15,
+                            l[l_num].x + 6,
+                            l[l_num].y + 2,
+                            l[l_num].x + 11,
+                            l[l_num].y + 12,
+                            bad_reviews[bad_reviews_num].x + 1,
+                            bad_reviews[bad_reviews_num].y,
+                            bad_reviews[bad_reviews_num].x + 15,
+                            bad_reviews[bad_reviews_num].y + 15,
                         ):
                             # you hit an alien
-                            aliens[alien_num].move(
+                            bad_reviews[bad_reviews_num].move(
                                 constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
                             )
-                            lasers[laser_num].move(
+                            l[l_num].move(
                                 constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y
                             )
                             sound.stop()
                             sound.play(boom_sound)
-                            show_alien()
-                            show_alien()
+                            show_bad_review()
+                            show_bad_review()
                             score += 1
                             score_text.clear()
                             score_text.cursor(0, 0)
                             score_text.move(1, 1)
                             score_text.text("Score: {0}".format(score))
 
-        for alien_num in range(len(aliens)):
-            if aliens[alien_num].x > 0:
+        # checks if any collisions occurred between ls and good reviews each frame
+        for l_num in range(len(l)):
+            if l[l_num].x > 0:
+                if good_review.x > 0:
+                    if stage.collide(
+                        l[l_num].x + 6,
+                        l[l_num].y + 2,
+                        l[l_num].x + 11,
+                        l[l_num].y + 12,
+                        good_review.x + 1,
+                        good_review.y,
+                        good_review.x + 15,
+                        good_review.y + 15,
+                    ):
+                        # L hit good review
+                        sound.stop()
+                        sound.play()
+                        time.sleep(3.0)
+                        game_over_scene(score)
+
+        # dev collides with bad reviews
+        for bad_reviews_num in range(len(bad_reviews)):
+            if bad_reviews[bad_reviews_num].x > 0:
                 if stage.collide(
-                    aliens[alien_num].x + 1,
-                    aliens[alien_num].y,
-                    aliens[alien_num].x + 15,
-                    aliens[alien_num].y + 15,
-                    ship.x,
-                    ship.y,
-                    ship.x + 15,
-                    ship.y + 15,
+                    bad_reviews[bad_reviews_num].x + 1,
+                    bad_reviews[bad_reviews_num].y,
+                    bad_reviews[bad_reviews_num].x + 15,
+                    bad_reviews[bad_reviews_num].y + 15,
+                    dev.x,
+                    dev.y,
+                    dev.x + 15,
+                    dev.y + 15,
                 ):
                     # alien hit the ship
                     sound.stop()
-                    sound.play(crash_sound)
+                    sound.play()
                     time.sleep(3.0)
                     game_over_scene(score)
 
         # redraws the Sprites
-        game.render_sprites(lasers + [ship] + aliens)
+        game.render_sprites(l + [dev] + bad_reviews)
         game.tick()
 
 
@@ -362,21 +413,21 @@ def game_over_scene(final_score):
     # adds text objects
     text = []
     text1 = stage.Text(
-        width=29, height=14, font=None, palette=constants.RED_PALETTE, buffer=None
+        width=29, height=14, font=None, palette=constants.BLUE_PALETTE, buffer=None
     )
     text1.move(22, 20)
     text1.text("Final Score: {:0>2d}".format(final_score))
     text.append(text1)
 
     text2 = stage.Text(
-        width=29, height=14, font=None, palette=constants.RED_PALETTE, buffer=None
+        width=29, height=14, font=None, palette=constants.BLUE_PALETTE, buffer=None
     )
     text2.move(43, 60)
     text2.text("GAME OVER")
     text.append(text2)
 
     text3 = stage.Text(
-        width=29, height=14, font=None, palette=constants.RED_PALETTE, buffer=None
+        width=29, height=14, font=None, palette=constants.BLUE_PALETTE, buffer=None
     )
     text3.move(32, 110)
     text3.text("PRESS SELECT")
